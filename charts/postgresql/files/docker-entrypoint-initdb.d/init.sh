@@ -2,9 +2,9 @@
 
 set -eu
 
-psql -v ON_ERROR_STOP=1 --username "$POSTGRESQL_USERNAME" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username "$POSTGRESQL_USERNAME"  <<-EOSQL
   -- Create database.
-  CREATE DATABASE db_app;
+  CREATE DATABASE app_db;
 
   -- Create two database users
   CREATE ROLE readwrite LOGIN ENCRYPTED PASSWORD 'password';
