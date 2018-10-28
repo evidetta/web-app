@@ -1,0 +1,92 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "web-app.fullname" . }}
+  labels:
+    web-app.kubernetes.io/name: {{ include "web-app.name" . }}
+    helm.sh/chart: {{ include "web-app.chart" . }}
+    web-app.kubernetes.io/instance: {{ .Release.Name }}
+    web-app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      web-app.kubernetes.io/name: {{ include "web-app.name" . }}
+      web-app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        web-app.kubernetes.io/name: {{ include "web-app.name" . }}
+        web-app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: db.host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: db.port
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: db.user
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: db.name
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: db.password
+            - name: DB_SSL_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: db.sslMode
+            - name: API_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: api.port
+            - name: API_PAGE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: api.pageSize
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
