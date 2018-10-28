@@ -20,7 +20,7 @@ config:
   db:
       port: 5432
       user: readwrite
-      name: db
+      name: app_db
       sslMode: disable
   api:
       port: 8080
