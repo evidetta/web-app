@@ -25,6 +25,7 @@ config:
   api:
       port: 8080
       pageSize: 10
+      runMigrations: true
 
 service:
   type: ClusterIP
@@ -62,4 +63,4 @@ tolerations: []
 affinity: {}
 
 postgresql:
-  postgresqlDatabase: db
+  postgresqlDatabase: app_db

@@ -64,6 +64,11 @@ spec:
                 configMapKeyRef:
                   name: {{ include "web-app.fullname" . }}
                   key: api.pageSize
+            - name: API_RUN_MIGRATIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "web-app.fullname" . }}
+                  key: api.runMigrations
           ports:
             - name: http
               containerPort: 8080

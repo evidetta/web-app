@@ -15,3 +15,4 @@ data:
   db.sslMode: {{ .Values.config.db.sslMode }}
   api.port: "{{ .Values.config.api.port }}"
   api.pageSize: "{{ .Values.config.api.pageSize }}"
+  api.runMigrations: "{{ .Values.config.api.runMigrations }}"
